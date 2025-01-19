@@ -1,0 +1,17 @@
+[package]
+name = "hello_riscv"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = "0.4.19"
+eg-seven-segment = "0.2.0"
+embedded-graphics = "0.8.1"
+embedded-graphics-framebuf = "0.5.0"
+embedded-text = "0.7.2"
+errno = "0.3.10"
+framebuffer = "0.3.1"
+libc = "0.2.169"
+memmap = "0.7.0"
+tinybmp = "0.6.0"
+tinytga = "0.5.0"
