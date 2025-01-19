@@ -1,5 +1,17 @@
 # Rust Hello World for the MilkV-Duo
 
+This project aims to implement a HID on the MilkV-Duo.
+The MilkV-Duo doesnt have a GPU or any OpenGL/... acceleration.
+Cause of the lack, drawing to a screen is running 100% on the CPU not accelerated.
+Plus - most graphic librarys wont work without OpenGL/Vulkan/... .
+Thats why this project started. I wanted a way to simply directly draw to the framebuffer device without X11 or any X11 related hacks.
+
+It uses the embedded-graphics crate - keep in mind that graphic operations are rather simple compared to software stacks like lvgl (please someone make cross compiling work for the lvgl bindings).
+
+Background:
+I tryed using the SDL2 and lvgl-bindings crate - but i failed cross compiling it.
+If someone succeeds cross-compiling them, please create an issue in this repo or write me an email.
+
 ## Sources
 Based on: https://barretts.club/posts/i-got-a-milkv-duo/
 
