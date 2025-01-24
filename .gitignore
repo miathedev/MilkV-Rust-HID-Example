@@ -1,3 +1,4 @@
 target
 toolchain
 vendor
+files/secrets
