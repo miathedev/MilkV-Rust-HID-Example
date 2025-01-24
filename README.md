@@ -36,7 +36,91 @@ Its basically always the same. Most important part on the MilkV is patching the 
 * MilkV Mailbox
 * MilkV GPIO
 
-# Known errors
+# Known errors/tricks
+
+## Connect to wifi
+Source: https://community.milkv.io/t/connect-to-wi-fi-on-duo-s/1540
+
+Start wpa_supplicant with:
+
+```
+echo "update_config=1" >> /etc/wpa_supplicant.conf
+wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf
+```
+At this point run:
+```
+wpa_cli -i wlan0
+```
+Use the scan and scan_results commands to see the available networks:
+```
+> scan
+OK
+<3>CTRL-EVENT-SCAN-STARTED 
+<3>CTRL-EVENT-SCAN-RESULTS 
+> scan_results
+bssid / frequency / signal level / flags / ssid
+11:22:33:44:55:66       5745    -78     [WPA2-PSK-CCMP][ESS]    MYSSID-5G
+11:22:33:44:55:67       2427    -85     [WPA2-PSK-CCMP][ESS]    MYSSID
+To associate with MYSSID-5G, add the network, set the credentials and enable it:
+
+> add_network
+1
+> set_network 1 ssid "MYSSID-5G"  
+OK
+> set_network 1 psk "password"
+OK
+> enable_network 1
+```
+
+If the SSID does not have password authentication, you must explicitly configure the network as keyless by replacing the command set_network 1 psk "password" with set_network 1 key_mgmt NONE.
+
+Finally save this network in the configuration file and quit wpa_cli:
+```
+> save_config
+OK
+> quit
+```
+
+```
+[root@milkv-duo]~# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000
+    link/ether 66:69:54:69:1c:2c brd ff:ff:ff:ff:ff:ff
+    inet 169.254.206.92/16 brd 169.254.255.255 scope global noprefixroute eth0
+       valid_lft forever preferred_lft forever
+3: usb0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether 7e:eb:9c:48:33:3c brd ff:ff:ff:ff:ff:ff
+    inet 192.168.42.1/24 brd 192.168.42.255 scope global usb0
+       valid_lft forever preferred_lft forever
+4: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000
+    link/ether 88:00:33:77:f1:0f brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.175/24 brd 192.168.0.255 scope global dynamic noprefixroute wlan0
+       valid_lft 84829sec preferred_lft 74029sec
+[root@milkv-duo]~# ping baidu.com
+PING baidu.com (39.156.66.10): 56 data bytes
+64 bytes from 39.156.66.10: seq=0 ttl=49 time=46.170 ms
+64 bytes from 39.156.66.10: seq=1 ttl=49 time=53.166 ms
+64 bytes from 39.156.66.10: seq=2 ttl=49 time=54.292 ms
+```
+Auto connect on startup
+
+```
+cat >> /mnt/system/duo-init.sh <<END
+# Auto connect to WIFI on startup
+wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf
+END
+reboot
+```
+## (WiFi/LAN) MAC changes everytime
+
+```
+echo "pre-up ifconfig eth0 hw ether 78:01:B3:FC:E8:55" >> /etc/network/interfaces
+echo "pre-up ifconfig wlan0 hw ether 78:01:B3:FC:E8:55" >> /etc/network/interfaces
+```
+
 ## Colors are inverted
 
 The display in this code uses 2 bytes per pixel. (BRG565)
