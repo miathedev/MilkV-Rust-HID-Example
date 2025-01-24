@@ -39,6 +39,7 @@ Its basically always the same. Most important part on the MilkV is patching the 
 # Known errors/tricks
 
 ## Connect to wifi
+### Using wpa_supplicant from the device
 Source: https://community.milkv.io/t/connect-to-wi-fi-on-duo-s/1540
 
 Start wpa_supplicant with:
@@ -113,6 +114,12 @@ cat >> /mnt/system/duo-init.sh <<END
 wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf
 END
 reboot
+```
+
+### Using a premade wpa_supplicant.conf
+See files/wpa_supplicant.conf. Copy it over to the device 
+```
+cp files/wpa_supplicant.conf ROOTFS/etc/wpa_supplicant.conf
 ```
 ## (WiFi/LAN) MAC changes everytime
 
